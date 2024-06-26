@@ -7,13 +7,13 @@ run: main
 	./$^
 
 main: main.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ -lsfml-graphics -lsfml-window -lsfml-system
 
 main.o: main.cpp tree.hpp node.hpp
 	$(CC) $(CFLAGS) -c $<
 
 valgrind: main
-	valgrind --leak-check=full --show-leak-kinds=all ./main
+	valgrind --leak-check=full --show-leak-kinds=all -s ./main
 
 clean:
 	rm -f *.o main
