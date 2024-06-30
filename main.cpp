@@ -1,24 +1,27 @@
 #include "tree.hpp"
 #include "node.hpp"
+#include "Complex.hpp"
 
 #include <iostream>
 #include <string>
 #include <vector>
-#include <SFML/Graphics.hpp>
+//#include <SFML/Graphics.hpp>
+// #include <functional>
 
 using namespace std;
 
 int main(){
-    sf::Window window(sf::VideoMode(640, 480), "Hello World");
 
-    // לולאת אירועים
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-    }
+    //sf::RenderWindow window(sf::VideoMode(800, 600), "Tree Visualization"); // create window
+
+    // // לולאת אירועים
+    // while (window.isOpen()) {
+    //     sf::Event event;
+    //     while (window.pollEvent(event)) {
+    //         if (event.type == sf::Event::Closed)
+    //             window.close();
+    //     }
+    // }
 
     Tree<double> tree; // Binary tree that contains doubles.
     cout << endl;
@@ -37,7 +40,8 @@ int main(){
     cout << tree.add_sub_node(n1, n5) << endl; // This should fail (print - error operation) because n1 already has 2 children.
     cout << tree.add_sub_node(n2, n5) << endl; // this create n5, after a correct operation
     cout << endl;
-
+    tree.draw();
+    //cout << tree;
     // The tree should look like:
     /**
      *       root = 1.1
@@ -88,8 +92,6 @@ int main(){
     // } // same as BFS: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
     // cout << endl;
 
-
-
     Tree<double,3> three_ary_tree; // 3-ary tree.
     Node<double> root_node1 (1.12);
     Node<double> s1 (1.22);
@@ -107,13 +109,29 @@ int main(){
 
      // The tree should look like:
     /**
-     *       root = 1.1
+     *       root = 1.12
      *     /      |     \
-     *    1.2    1.3    1.4
+     *    1.22    1.32    1.42
      *   /        |
-     *  1.5      1.6
+     *  1.52      1.62
      */
+    cout << "****************************************************************************************************" << endl;
+    cout << "Pre-order traversal: (it behave like DFS)" << endl;
+    for(auto node = three_ary_tree.begin_pre_order(); node != three_ary_tree.end_pre_order(); ++node)
+    {
+        cout << (*node).get_data() << endl;
+    } // prints: 1.12 1.42 1.32 1.62 1.22 1.52
+    
+    cout << "Post-order traversal: (it behave like DFS)" << endl;
+    for (auto node = three_ary_tree.begin_post_order(); node != three_ary_tree.end_post_order(); ++node) {
+        cout << (*node).get_data() << endl;
+    } // prints: 1.12 1.42 1.32 1.62 1.22 1.52
 
+    cout << "In-order traversal: (it behave like DFS)" << endl;
+    for (auto node = three_ary_tree.begin_in_order(); node != three_ary_tree.end_in_order(); ++node) {
+        cout << (*node).get_data() << endl;
+    } // prints: 1.12 1.42 1.32 1.62 1.22 1.52
+    cout << "****************************************************************************************************" << endl;
     // Iterate over the tree in BFS
     cout << "BFS traversal:" << endl;
     for (auto node = three_ary_tree.begin_bfs_scan(); node != three_ary_tree.end_bfs_scan(); ++node) {
@@ -228,7 +246,7 @@ int main(){
     for (auto node = tree3.begin_dfs_scan(); node != tree3.end_dfs_scan(); ++node)
     {
         cout << (*node).get_data() << endl;
-    } // prints: 1, 2, 4, 4, 3, 6
+    } // prints: 1, 2, 4, 5, 3, 6
     cout << endl;
 
     Tree<double> tree4; // Binary tree that contains doubles.
@@ -262,6 +280,81 @@ int main(){
     {
         cout << (*node).get_data() << endl;
     } // prints: 1.4, 1.6, 1.7, 1.8, 1.9, 2.1
+
+
+    Complex c1(1, 2);
+    Complex c2(3, 4);
+    Complex c3(5, 6);
+    Complex c4(7, 8);
+    Complex c5(9, 10);
+    Complex c6(11, 12);
+
+    Tree<Complex> tree5; // Binary tree that contains doubles.
+    cout << endl;
+    Node<Complex> root_node5 (c1);
+    Node<Complex> z1 (c2);
+    Node<Complex> z2 (c3);
+    Node<Complex> z3 (c4);
+    Node<Complex> z4 (c5);
+    Node<Complex> z5 (c6);
+
+    tree5.add_root(root_node5);
+    cout << tree5.add_sub_node(tree5.get_root(), z1) << endl;
+    cout << tree5.add_sub_node(tree5.get_root(), z2) << endl;
+    cout << tree5.add_sub_node(z1, z3) << endl;
+    cout << tree5.add_sub_node(z1, z4) << endl;
+    cout << tree5.add_sub_node(z2, z5) << endl;
+    cout << endl;
+
+    // The tree should look like:
+    /**
+     *       root = 1+2i
+     *     /         \
+     *    3+4i       5+6i
+     *   /  \        /
+     * 7+8i  9+10i  11+12i
+     */
+
+    cout << "Pre-order traversal:" << endl;
+    //Iterate over the tree in pre-order
+    for (auto node = tree5.begin_pre_order(); node != tree5.end_pre_order(); ++node) {
+        cout << (*node).get_data().to_string() << endl;
+    } // prints: 
+    cout << endl;
+
+    cout << "Post-order traversal:" << endl;
+    for (auto node = tree5.begin_post_order(); node != tree5.end_post_order(); ++node)
+    {
+        cout << (*node).get_data().to_string() << endl;
+    } // prints: 
+    cout << endl;
+
+    cout << "In-order traversal:" << endl;
+    for (auto node = tree5.begin_in_order(); node != tree5.end_in_order(); ++node)
+    {
+        cout << (*node).get_data().to_string() << endl;
+    } // prints: 
+    cout << endl;
+
+    cout << "BFS traversal:" << endl;
+    for (auto node = tree5.begin_bfs_scan(); node != tree5.end_bfs_scan(); ++node)
+    {
+        cout << (*node).get_data().to_string() << endl;
+    } // prints: 
+    cout << endl;
+
+    cout << "DFS traversal:" << endl;
+    for (auto node = tree5.begin_dfs_scan(); node != tree5.end_dfs_scan(); ++node)
+    {
+        cout << (*node).get_data().to_string() << endl;
+    } // prints: 
+    cout << endl;
+
+    cout << "Heap traversal:" << endl;
+    for (auto node = tree5.begin_heap_scan(); node != tree5.end_heap_scan(); ++node)
+    {
+        cout << (*node).get_data().to_string() << endl;
+    } // prints: 
 
     return 0;
 }

@@ -12,7 +12,8 @@
 #include <queue>
 #include <type_traits>
 #include <algorithm>
-
+#include <SFML/Graphics.hpp>
+#include <sstream>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ template <typename T, int maxChildren = 2>
 class Tree {
     private:
         Node<T>* root;
+
     public:
 
         class IteratorPreOrder;
@@ -36,66 +38,68 @@ class Tree {
 
     ~Tree() {
         //delete_node(root);
+        delete root;
     }
 
     void add_root(Node<T>& root_node) {
         if (root == nullptr) {
             root = new Node<T>(root_node.get_data());
-            cout << "Root added, its value is: " << root_node.get_data() << endl;
-        } else {
-            cout << "Root already exists" << endl;
+        //     cout << "Root added, its value is: " << root_node.get_data() << endl;
+        // } else {
+        //     cout << "Root already exists" << endl;
         }
     }
 
     string add_sub_node(Node<T>& parent, Node<T>& child_node) {
         if (root == nullptr) {
-            throw invalid_argument("Root is not set.");
+            throw invalid_argument("Root is not set");
         }
-        string res;
+        string res = " you add node";
+        
+        // auto childData = child_node.get_data();
+        // auto parentData = parent.get_data();
 
-        // Store data once to avoid multiple calls
-        auto childData = child_node.get_data();
-        auto parentData = parent.get_data();
-
-        if constexpr (is_same_v<T,string>) { // if T is string
-            if (parent.get_children().size() < maxChildren) {
-                parent.add_child(&child_node);
-                res = "Added a new child with value: " + childData + " to parent with value: " + parentData;
-            } else {
-                res = "No available child slot found for parent with value: " + parentData;
-            }
-        } else { // if T is not string
-            if (parent.get_children().size() < maxChildren) {
-                parent.add_child(&child_node);
-                res = "Added a new child with value: " + to_string(childData) + " to parent with value: " + to_string(parentData);
-            } else {
-                res = "No available child slot found for parent with value: " + to_string(parentData);
-            }
-        }
+        if (parent.get_children().size() < maxChildren) {
+            parent.add_child(&child_node);}
+        // if constexpr (is_same_v<T,string>) { // if T is string
+        //     if (parent.get_children().size() < maxChildren) {
+        //         parent.add_child(&child_node);
+        //         res = "Added a new child with value: " + childData + " to parent with value: " + parentData;
+        //     } else {
+        //         res = "No available child slot found for parent with value: " + parentData;
+        //     }
+        // } else { // if T is not string
+        //     if (parent.get_children().size() < maxChildren) {
+        //         parent.add_child(&child_node);
+        //         res = "Added a new child with value: " + to_string(childData) + " to parent with value: " + to_string(parentData);
+        //     } else {
+        //         res = "No available child slot found for parent with value: " + to_string(parentData);
+        //     }
+        // }
         return res;
     }
 
-    bool find(Node<T>* node, T data) const{
-        if (node == nullptr) {
-            return false;
-        }
-        if (node->get_data() == data) {
-            return true;
-        }
-        for (Node<T>* child : node->get_children()) {
-            if (find(child, data)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // bool find(Node<T>* node, T data) const{
+    //     if (node == nullptr) {
+    //         return false;
+    //     }
+    //     if (node->get_data() == data) {
+    //         return true;
+    //     }
+    //     for (Node<T>* child : node->get_children()) {
+    //         if (find(child, data)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
-    void print(const Node<T>& node) const {
-        node.print_node(); // Print the node.
-        for (const Node<T>* child : node.get_children()) { // Print the children.
-            print(*child);
-        }
-    }
+    // void print(const Node<T>& node) const {
+    //     node.print_node(); // Print the node.
+    //     for (const Node<T>* child : node.get_children()) { // Print the children.
+    //         print(*child);
+    //     }
+    // }
 
     Node<T>& get_root() const{
         if (root == nullptr) {
@@ -105,12 +109,13 @@ class Tree {
     }
 
     // void delete_node(Node<T>* node) {
-    //     if (node != nullptr) {
-    //         for (Node<T>* child : node->get_children()) {
-    //             delete_node(child);
-    //         }
-    //         delete node;
+    //     if (node == nullptr) {
+    //         return;
     //     }
+    //     for(auto child : node->get_children()) {
+    //         delete_node(child);
+    //     }
+    //     delete node;
     // }
 
     IteratorPreOrder begin_pre_order(){return IteratorPreOrder(root);}
@@ -141,14 +146,27 @@ public:
     IteratorPreOrder(Node<T> *root) : current(root) {
         if(root != nullptr) {
             nodesStack.push(root);
-        }
-        if(maxChildren > 2){
-            throw invalid_argument("Max children should be 2 or less if you want to use pre-order iterator.");
+            //++(*this);
         }
     }
 
     IteratorPreOrder& operator++() {
-        if (!nodesStack.empty()) {
+        if(maxChildren > 2){
+            if (!nodesStack.empty()) {
+            current = nodesStack.top();
+            nodesStack.pop();
+            const auto& children = current->get_children();
+            for (const auto& child : children) {
+                if (child != nullptr) {
+                    nodesStack.push(child);
+                }
+            }
+        } else {
+            current = nullptr;
+        }
+        return *this;
+        }
+        else if(!nodesStack.empty()) {
             current = nodesStack.top();
             nodesStack.pop();
             const auto& children = current->get_children();
@@ -192,12 +210,25 @@ public:
             nodesStack.push({root, false});
             ++(*this);
         }
-        if(maxChildren > 2){
-            throw invalid_argument("Max children should be 2 or less if you want to use post-order iterator.");
-        }
     }
 
     IteratorPostOrder& operator++() {
+    if (maxChildren > 2) {
+        if (!nodesStack.empty()) {
+            current = nodesStack.top().first;
+            nodesStack.pop();
+            const auto& children = current->get_children();
+            for (const auto& child : children) {
+                if (child != nullptr) {
+                    nodesStack.push({child, false}); // Pushing {child, visited=false}
+                }
+            }
+        } else {
+            current = nullptr;
+        }
+        return *this;
+    } else {
+        // Case for up to 2 children per node
         while (!nodesStack.empty()) {
             auto [node, visited] = nodesStack.top();
             nodesStack.pop();
@@ -207,17 +238,20 @@ public:
                 return *this;
             }
 
-            nodesStack.push({node, true});
+            nodesStack.push({node, true}); // Mark node as visited
             const auto& children = node->get_children();
             for (auto it = children.rbegin(); it != children.rend(); ++it) {
                 if (*it != nullptr) {
-                    nodesStack.push({*it, false});
+                    nodesStack.push({*it, false}); // Push children with visited=false
                 }
             }
         }
-        current = nullptr;
+        current = nullptr; // No more nodes to process
         return *this;
     }
+}
+
+
     bool operator!=(const IteratorPostOrder& other) const {
         return current != other.current;
     }
@@ -235,22 +269,42 @@ class IteratorInOrder {
 private:
     stack<Node<T>*> nodesStack;
     Node<T>* current;
-    bool started = false;
 public:
 IteratorInOrder(Node<T> *root) : current(root) {
         if(maxChildren > 2){
-            throw invalid_argument("Max children should be 2 or less if you want to use in-order iterator.");
+            if(root != nullptr){
+                nodesStack.push(root);
+                ++(*this);
+            }
         }
-        while (current != nullptr) {
-            nodesStack.push(current);
-            current = current->get_children().empty() ? nullptr : current->get_children()[0];
-        }
-        if (!nodesStack.empty()) {
-            current = nodesStack.top();
+        else{
+            while (current != nullptr) {
+                nodesStack.push(current);
+                current = current->get_children().empty() ? nullptr : current->get_children()[0];
+            }
+            if (!nodesStack.empty()) {
+                current = nodesStack.top();
+            }
         }
     }
 
     IteratorInOrder& operator++() {
+        if(maxChildren > 2){
+            if (!nodesStack.empty()) {
+            current = nodesStack.top();
+            nodesStack.pop();
+            const auto& children = current->get_children();
+            for (const auto& child : children) {
+                if (child != nullptr) {
+                    nodesStack.push(child);
+                }
+            }
+        } else {
+            current = nullptr;
+        }
+        return *this;
+        }
+        else{
         if (!nodesStack.empty()) {
             Node<T>* node = nodesStack.top();
             nodesStack.pop();
@@ -273,6 +327,7 @@ IteratorInOrder(Node<T> *root) : current(root) {
             current = nullptr;
         }
         return *this;
+        }
     }
 
     bool operator!=(const IteratorInOrder& other) const {
@@ -415,7 +470,80 @@ class IteratorHeap {
             return *current;
         }
     };
+//*******************************************************************  GUI *************************************************************/
+    void drawNode(sf::RenderWindow& window, Node<T>* node, sf::Vector2f position, float xOffset, float yOffset, const sf::Font& font) {
+        if (node == nullptr) return;
+
+        // Defining the circle
+        sf::CircleShape circle(20);
+        circle.setFillColor(sf::Color::Green);
+        circle.setPosition(position);
+        window.draw(circle);
+
+        // Defining the text
+        sf::Text text;
+        text.setFont(font);
+        text.setCharacterSize(15);
+        text.setFillColor(sf::Color::Red);
+
+        if constexpr (std::is_same_v<T, std::string>) { // if T is string
+            text.setString(node->get_data());
+        } else {
+            std::ostringstream oss;
+            oss << node->get_data();
+            text.setString(oss.str()); // if T is not string
+        }
+
+        // Center the text within the circle
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+        text.setPosition(circle.getPosition().x + circle.getRadius(), circle.getPosition().y + circle.getRadius());
+
+        window.draw(text);
+
+        float childXOffset = xOffset / std::max(1, static_cast<int>(node->get_children().size()));
+        float childYOffset = yOffset;
+
+        for (size_t i = 0; i < node->get_children().size(); ++i) {
+            sf::Vector2f childPosition(position.x + (i - (node->get_children().size() - 1) / 2.0f) * childXOffset, position.y + childYOffset);
+
+            sf::Vertex line[] = {
+                sf::Vertex(sf::Vector2f(position.x + 20, position.y + 20)),
+                sf::Vertex(sf::Vector2f(childPosition.x + 20, childPosition.y + 20))
+            };
+            window.draw(line, 2, sf::Lines);
+
+            drawNode(window, node->get_children()[i], childPosition, childXOffset, childYOffset, font);
+        }
+    }
+
+    void draw() {
+        sf::RenderWindow window(sf::VideoMode(700, 500), "Tree Visualization");
+
+        sf::Font font;
+        if (!font.loadFromFile("arial.ttf")) {
+            std::cerr << "Failed to load font!" << std::endl;
+            return;
+        }
+
+        while (window.isOpen()) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+            }
+
+            window.clear();
+            drawNode(window, root, sf::Vector2f(330, 100), 200, 100, font);
+            window.display();
+        }
+    }
+
+    // friend inline ostream& operator<< (ostream& os, Tree<T>& tree) {
+    //     tree.draw();
+    //     os << "Tree drawn";
+    //     return os;
+    // }
 
 };
-
 #endif // TREE_HPP
