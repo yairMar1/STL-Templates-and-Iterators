@@ -1,5 +1,6 @@
 #include "Complex.hpp"
 #include <string>
+#include <cmath> 
 
 using namespace std;
 
@@ -24,7 +25,7 @@ Complex &Complex::operator-=(const Complex &other){
     return *this;
 }
 
-bool Complex::operator==(const Complex &other){
+bool Complex::operator==(const Complex &other) const{
     return real == other.real && imaginary == other.imaginary;
 }
 
@@ -32,8 +33,18 @@ bool Complex::operator!=(const Complex &other){
     return !(*this == other);
 }
 
-bool Complex::operator<(const Complex &other){
-    return real < other.real || (real == other.real && imaginary < other.imaginary);
+// bool Complex::operator<(const Complex &other){
+//     return real < other.real || (real == other.real && imaginary < other.imaginary);
+// }
+
+bool Complex::operator<(const Complex &other) const{
+    double thisMagnitude = sqrt(pow(real, 2) + pow(imaginary, 2));
+    double otherMagnitude = sqrt(pow(other.real, 2) + pow(other.imaginary, 2));
+    return thisMagnitude < otherMagnitude;
+}
+
+bool Complex::operator>(const Complex &other){
+    return other < (*this);
 }
 
 string Complex::to_string() const{

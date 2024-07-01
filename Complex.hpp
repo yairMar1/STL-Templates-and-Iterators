@@ -17,9 +17,9 @@ public:
     double get_imaginary() const;
     Complex& operator+=(const Complex& other);
     Complex& operator-=(const Complex& other);
-    bool operator==(const Complex& other);
+    bool operator==(const Complex& other) const;
     bool operator!=(const Complex& other);
-    bool operator<(const Complex& other);
+    bool operator<(const Complex& other) const;
     bool operator>(const Complex& other);
     string to_string() const;
 };

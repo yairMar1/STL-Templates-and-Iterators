@@ -41,6 +41,7 @@ int main(){
     cout << tree.add_sub_node(n2, n5) << endl; // this create n5, after a correct operation
     cout << endl;
     tree.draw();
+    
     //cout << tree;
     // The tree should look like:
     /**
@@ -319,42 +320,42 @@ int main(){
     //Iterate over the tree in pre-order
     for (auto node = tree5.begin_pre_order(); node != tree5.end_pre_order(); ++node) {
         cout << (*node).get_data().to_string() << endl;
-    } // prints: 
+    } // prints: 1+2i, 3+4i, 7+8i, 9+10i, 5+6i, 11+12i
     cout << endl;
 
     cout << "Post-order traversal:" << endl;
     for (auto node = tree5.begin_post_order(); node != tree5.end_post_order(); ++node)
     {
         cout << (*node).get_data().to_string() << endl;
-    } // prints: 
+    } // prints: 7+8i, 9+10i, 3+4i, 11+12i, 5+6i, 1+2i
     cout << endl;
 
     cout << "In-order traversal:" << endl;
     for (auto node = tree5.begin_in_order(); node != tree5.end_in_order(); ++node)
     {
         cout << (*node).get_data().to_string() << endl;
-    } // prints: 
+    } // prints: 7+8i, 3+4i, 9+10i, 1+2i, 11+12i, 5+6i
     cout << endl;
 
     cout << "BFS traversal:" << endl;
     for (auto node = tree5.begin_bfs_scan(); node != tree5.end_bfs_scan(); ++node)
     {
         cout << (*node).get_data().to_string() << endl;
-    } // prints: 
+    } // prints: 1+2i, 3+4i, 5+6i, 7+8i, 9+10i, 11+12i
     cout << endl;
 
     cout << "DFS traversal:" << endl;
     for (auto node = tree5.begin_dfs_scan(); node != tree5.end_dfs_scan(); ++node)
     {
         cout << (*node).get_data().to_string() << endl;
-    } // prints: 
+    } // prints: 1+2i, 3+4i, 7+8i, 9+10i, 5+6i, 11+12i
     cout << endl;
 
     cout << "Heap traversal:" << endl;
     for (auto node = tree5.begin_heap_scan(); node != tree5.end_heap_scan(); ++node)
     {
         cout << (*node).get_data().to_string() << endl;
-    } // prints: 
+    } // prints: 11+12i, 9+10i, 7+8i, 5+6i, 3+4i, 1+2i
 
     return 0;
 }

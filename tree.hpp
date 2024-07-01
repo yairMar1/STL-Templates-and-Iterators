@@ -50,17 +50,30 @@ class Tree {
         }
     }
 
+    string add_root(Node<T>& root_node, size_t n) {
+        if (root == nullptr) {
+            root = new Node<T>(root_node.get_data());
+            string res = " Root added";
+            return res;
+        } else {
+            string res = " There is already a root";
+            return res;
+        }
+    }
+
     string add_sub_node(Node<T>& parent, Node<T>& child_node) {
         if (root == nullptr) {
             throw invalid_argument("Root is not set");
         }
-        string res = " you add node";
+        string res = " you can't add node";
         
         // auto childData = child_node.get_data();
         // auto parentData = parent.get_data();
 
         if (parent.get_children().size() < maxChildren) {
-            parent.add_child(&child_node);}
+            parent.add_child(&child_node);
+            res = " you add node";
+            }
         // if constexpr (is_same_v<T,string>) { // if T is string
         //     if (parent.get_children().size() < maxChildren) {
         //         parent.add_child(&child_node);
@@ -78,28 +91,6 @@ class Tree {
         // }
         return res;
     }
-
-    // bool find(Node<T>* node, T data) const{
-    //     if (node == nullptr) {
-    //         return false;
-    //     }
-    //     if (node->get_data() == data) {
-    //         return true;
-    //     }
-    //     for (Node<T>* child : node->get_children()) {
-    //         if (find(child, data)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // void print(const Node<T>& node) const {
-    //     node.print_node(); // Print the node.
-    //     for (const Node<T>* child : node.get_children()) { // Print the children.
-    //         print(*child);
-    //     }
-    // }
 
     Node<T>& get_root() const{
         if (root == nullptr) {
