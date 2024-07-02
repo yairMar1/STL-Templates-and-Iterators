@@ -35,7 +35,7 @@ class Tree {
         cout << "Tree created with max children: " << maxChildren << endl;
         cout << "Type: " << typeid(T).name() << "\n";
     }
-
+    // In fact, you don't need to do new at all, but if I did anyway (in this assignment I only did it for the root) then we will have to destruct it
     ~Tree() {
         //delete_node(root);
         delete root;
@@ -428,14 +428,14 @@ class IteratorHeap {
                 for (auto node = tree->begin_bfs_scan(); node != tree->end_bfs_scan(); ++node) {
                     nodesHeap.push_back(&(*node));
                 }
-                make_heap(nodesHeap.begin(), nodesHeap.end(), [](Node<T>* a, Node<T>* b) { return a->get_data() < b->get_data(); });
+                make_heap(nodesHeap.begin(), nodesHeap.end(), [](Node<T>* a, Node<T>* b) { return a->get_data() > b->get_data(); }); // if we change the sign to < we will have a max heap (and at line 438)
                 this->operator++();  // Move to the first node
             }
         }
 
     IteratorHeap& operator++() {
         if (!nodesHeap.empty()) {
-            pop_heap(nodesHeap.begin(), nodesHeap.end(), [](Node<T>* a, Node<T>* b) { return a->get_data() < b->get_data(); });// Pop the minimum element (root of the heap)
+            pop_heap(nodesHeap.begin(), nodesHeap.end(), [](Node<T>* a, Node<T>* b) { return a->get_data() > b->get_data(); });// Pop the minimum element (root of the heap)
             current = nodesHeap.back(); // Set current to the minimum element
             nodesHeap.pop_back(); // Remove the minimum element from the heap
         } else {
@@ -477,10 +477,10 @@ class IteratorHeap {
         text.setCharacterSize(15);
         text.setFillColor(sf::Color::Red);
 
-        if constexpr (std::is_same_v<T, std::string>) { // if T is string
+        if constexpr (is_same_v<T, string>) { // if T is string
             text.setString(node->get_data());
         } else {
-            std::ostringstream oss;
+            ostringstream oss;
             oss << node->get_data();
             text.setString(oss.str()); // if T is not string
         }
@@ -492,7 +492,7 @@ class IteratorHeap {
 
         window.draw(text);
 
-        float childXOffset = xOffset / std::max(1, static_cast<int>(node->get_children().size()));
+        float childXOffset = xOffset / max(1, static_cast<int>(node->get_children().size()));
         float childYOffset = yOffset;
 
         for (size_t i = 0; i < node->get_children().size(); ++i) {
@@ -512,8 +512,8 @@ class IteratorHeap {
         sf::RenderWindow window(sf::VideoMode(700, 500), "Tree Visualization");
 
         sf::Font font;
-        if (!font.loadFromFile("arial.ttf")) {
-            std::cerr << "Failed to load font!" << std::endl;
+        if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
+            cerr << "Failed to load font!" << endl;
             return;
         }
 
@@ -529,12 +529,6 @@ class IteratorHeap {
             window.display();
         }
     }
-
-    // friend inline ostream& operator<< (ostream& os, Tree<T>& tree) {
-    //     tree.draw();
-    //     os << "Tree drawn";
-    //     return os;
-    // }
 
 };
 #endif // TREE_HPP

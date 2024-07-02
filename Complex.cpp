@@ -50,3 +50,10 @@ bool Complex::operator>(const Complex &other){
 string Complex::to_string() const{
     return std::to_string(real) + " + " + std::to_string(imaginary) + "i";
 }
+
+ostream& operator<<(ostream& os, const Complex& c) {
+    string res = to_string(c.real) + "+" + to_string(c.imaginary) + "i";
+    // os << c.real << "+" << c.imaginary << "i";
+    os << res;
+    return os;
+}

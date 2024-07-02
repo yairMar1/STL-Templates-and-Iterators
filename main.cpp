@@ -107,7 +107,7 @@ int main(){
     cout << three_ary_tree.add_sub_node(three_ary_tree.get_root(), s3) << endl;
     cout << three_ary_tree.add_sub_node(s1, s4) << endl;
     cout << three_ary_tree.add_sub_node(s2, s5) << endl;
-
+    three_ary_tree.draw();
      // The tree should look like:
     /**
      *       root = 1.12
@@ -164,6 +164,7 @@ int main(){
     cout << tree2.add_sub_node(d1, d4) << endl;
     cout << tree2.add_sub_node(d1, d5) << endl; // This should fail (print - error operation) because n1 already has 2 children.
     cout << tree2.add_sub_node(d2, d5) << endl; // this create n5, after a correct operation
+    tree2.draw();
     cout << endl;
 
     // The tree should look like:
@@ -204,6 +205,7 @@ int main(){
     cout << tree3.add_sub_node(a1, a4) << endl;
     cout << tree3.add_sub_node(a1, a5) << endl; // This should fail (print - error operation) because n1 already has 2 children.
     cout << tree3.add_sub_node(a2, a5) << endl; // this create n5, after a correct operation
+    tree3.draw();
     cout << endl;
 
     // The tree should look like:
@@ -265,6 +267,7 @@ int main(){
     cout << tree4.add_sub_node(f1, f3) << endl;
     cout << tree4.add_sub_node(f1, f4) << endl;
     cout << tree4.add_sub_node(f2, f5) << endl;
+    tree4.draw();
     cout << endl;
 
     // The tree should look like:
@@ -305,6 +308,7 @@ int main(){
     cout << tree5.add_sub_node(z1, z3) << endl;
     cout << tree5.add_sub_node(z1, z4) << endl;
     cout << tree5.add_sub_node(z2, z5) << endl;
+    tree5.draw();
     cout << endl;
 
     // The tree should look like:

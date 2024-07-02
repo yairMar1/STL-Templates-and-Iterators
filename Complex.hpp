@@ -22,6 +22,7 @@ public:
     bool operator<(const Complex& other) const;
     bool operator>(const Complex& other);
     string to_string() const;
+    friend ostream& operator<<(ostream& os, const Complex& c);
 };
 
 #endif //COMPLEX_HPP
