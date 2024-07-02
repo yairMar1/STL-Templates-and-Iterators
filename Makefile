@@ -6,7 +6,7 @@ VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 SOURCESTEST=TestCounter.cpp Test.cpp Complex.cpp
 OBJECTSTEST=$(subst .cpp,.o,$(SOURCESTEST))
 
-run: main
+tree: main
 	./$^
 
 main: main.o Complex.o
